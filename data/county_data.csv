@@ -1,0 +1,48 @@
+county_code,county,region,population_2024,budget_billion
+001,Mombasa,Coast,1339787,7.80
+002,Kwale,Coast,950000,6.50
+003,Kilifi,Coast,1720000,12.11
+004,Tana River,Coast,365000,5.60
+005,Lamu,Coast,172000,3.20
+006,Taita Taveta,Coast,375000,5.00
+007,Garissa,North Eastern,900000,8.70
+008,Wajir,North Eastern,870000,9.20
+009,Mandera,North Eastern,1100000,10.50
+010,Marsabit,North Eastern,470000,7.80
+011,Isiolo,North Eastern,323000,4.80
+012,Meru,Eastern,1500000,11.20
+013,Tharaka Nithi,Eastern,410000,4.30
+014,Embu,Eastern,620000,6.10
+015,Kitui,Eastern,1200000,9.40
+016,Machakos,Eastern,1280000,9.49
+017,Makueni,Eastern,990000,8.30
+018,Nyandarua,Central,680000,6.20
+019,Nyeri,Central,800000,6.80
+020,Kirinyaga,Central,640000,5.70
+021,Murang'a,Central,1100000,7.80
+022,Kiambu,Central,2704000,13.27
+023,Turkana,Rift Valley,1200000,13.10
+024,West Pokot,Rift Valley,640000,6.90
+025,Samburu,Rift Valley,358000,5.40
+026,Trans Nzoia,Rift Valley,1100000,9.00
+027,Uasin Gishu,Rift Valley,1250000,10.20
+028,Elgeyo Marakwet,Rift Valley,454480,4.60
+029,Nandi,Rift Valley,890000,7.70
+030,Baringo,Rift Valley,666763,6.60
+031,Laikipia,Rift Valley,518560,5.60
+032,Nakuru,Rift Valley,2397000,13.67
+033,Narok,Rift Valley,1100000,9.80
+034,Kajiado,Rift Valley,1150000,8.70
+035,Kericho,Rift Valley,900000,6.90
+036,Bomet,Rift Valley,820000,6.80
+037,Kakamega,Western,2038000,12.98
+038,Vihiga,Western,620000,5.50
+039,Bungoma,Western,1600000,10.80
+040,Busia,Western,850000,7.60
+041,Siaya,Nyanza,1000000,7.50
+042,Kisumu,Nyanza,1200000,8.30
+043,Homa Bay,Nyanza,1200000,8.50
+044,Migori,Nyanza,1100000,8.60
+045,Kisii,Nyanza,1340000,8.89
+046,Nyamira,Nyanza,640000,5.60
+047,Nairobi,Nairobi,4828000,20.07

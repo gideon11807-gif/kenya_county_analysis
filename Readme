@@ -1,0 +1,114 @@
+# 🇰🇪 Kenya County Budget Analysis
+
+An interactive data analysis project examining how Kenya's FY 2023/24 equitable share budget allocations compare across all 47 counties — both in absolute terms and per capita.
+
+Built with **Python**, **Pandas**, **Matplotlib**, **SciPy**, and **Streamlit**.
+
+---
+
+## 🔍 Key Findings
+
+- **Lamu receives 4.5x more per person than Nairobi** (KES 18,605 vs KES 4,157) despite Nairobi receiving the largest absolute allocation (KES 20.07B)
+- **Strong negative correlation** (r = -0.671) between county population and budget per person — larger counties are systematically underfunded per capita
+- **North Eastern region** leads on per-capita allocation (avg KES 11,193/person), while **Nairobi region** ranks last (KES 4,157/person)
+- **Gini coefficient of 0.168** indicates moderate inequality in per-capita budget distribution across counties
+
+---
+
+## 📊 Dashboard Sections
+
+| Section | Description |
+|---|---|
+| 📊 Overview | All 47 counties ranked by budget per person, top 10 vs bottom 10 |
+| 📍 Regional Analysis | Budget comparison across Kenya's 8 regions |
+| 🔗 Correlation & Gini | Lorenz curve, distribution, regression analysis |
+| 🎯 Quintile Analysis | Counties grouped into 5 equal bands, boxplots by region |
+| 🔍 County Explorer | Look up any county vs national and regional averages |
+| 📋 Full Rankings | Filterable table with CSV export |
+
+---
+
+## 🗂️ Project Structure
+
+```
+kenya_county_analysis/
+├── data/
+│   └── county_data.csv          # All 47 counties with population & budget
+├── notebooks/
+│   ├── analysis.py              # Core analysis script
+│   └── deep_analysis.py         # Gini, regional, correlation & quintile analysis
+├── dashboards/                  # Auto-generated chart outputs
+├── dashboard.py                 # Streamlit interactive dashboard
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## 📦 Data Sources
+
+| Field | Source |
+|---|---|
+| Population | [KNBS 2024 County Population Projections](https://www.knbs.or.ke) (based on 2019 Census) |
+| Budget | FY 2023/24 Equitable Share Allocations — County Allocation of Revenue Act, 2023 |
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/YOUR_USERNAME/kenya_county_analysis.git
+cd kenya_county_analysis
+```
+
+### 2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the Streamlit dashboard
+```bash
+streamlit run dashboard.py
+```
+
+### 4. Run the deep analysis script
+```bash
+python notebooks/deep_analysis.py
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- **Python 3.10+**
+- **Pandas** — data manipulation
+- **NumPy** — numerical analysis
+- **Matplotlib** — data visualisation
+- **SciPy** — statistical analysis (Pearson correlation)
+- **Streamlit** — interactive dashboard
+
+---
+
+## 📈 Analysis Methodology
+
+**Budget Per Person** is calculated as:
+```
+budget_per_person = (budget_billion × 1,000,000,000) / population_2024
+```
+
+**Gini Coefficient** measures inequality in per-capita allocation across counties (0 = perfect equality, 1 = total inequality).
+
+**Pearson Correlation** tests the relationship between county population size and budget allocation — both absolute and per capita.
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE)
