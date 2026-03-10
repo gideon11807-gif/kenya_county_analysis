@@ -4,6 +4,9 @@
 # import matplotlib.pyplot as plt
 # import matplotlib.ticker as mticker
 # import matplotlib.patches as mpatches
+# import plotly.express as px
+# import json
+# import urllib.request
 # from scipy import stats
 
 # st.set_page_config(page_title="Kenya County Budget Analysis", page_icon="🇰🇪", layout="wide")
@@ -54,6 +57,15 @@
 #     df['budget_per_person'] = df['budget_per_person'].round(0).astype(int)
 #     return df
 
+# @st.cache_data
+# def load_geojson():
+#     url = "https://raw.githubusercontent.com/mikelmaron/kenya-election-data/master/data/counties.geojson"
+#     with urllib.request.urlopen(url) as response:
+#         geojson = json.loads(response.read().decode())
+#     for feature in geojson['features']:
+#         feature['properties']['COUNTY_NAM'] = feature['properties']['COUNTY_NAM'].strip().title()
+#     return geojson
+
 # df = load_data()
 # sorted_df = df.sort_values('budget_per_person', ascending=False).reset_index(drop=True)
 # regional = df.groupby('region').agg(counties=('county','count'), total_pop=('population_2024','sum'), total_budget=('budget_billion','sum')).reset_index()
@@ -65,7 +77,7 @@
 
 # with st.sidebar:
 #     st.markdown('<div style="font-family:Syne,sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:1rem;">🇰🇪 Navigation</div>', unsafe_allow_html=True)
-#     section = st.radio("Go to", ["📊 Overview","📍 Regional Analysis","🔗 Correlation & Gini","🎯 Quintile Analysis","🔍 County Explorer","📋 Full Rankings"])
+#     section = st.radio("Go to", ["📊 Overview","🗺️ Choropleth Map","📍 Regional Analysis","🔗 Correlation & Gini","🎯 Quintile Analysis","🔍 County Explorer","📋 Full Rankings"])
 #     st.markdown("---")
 #     st.markdown(f'<div style="color:{MUTED};font-size:0.75rem;">Data: KNBS 2024 Projections<br>Budget: FY 2023/24 Equitable Share<br>Counties: 47</div>', unsafe_allow_html=True)
 
@@ -113,6 +125,33 @@
 #         ax3.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{int(x):,}'))
 #         ax3.set_xlabel('KES per Person'); ax3.invert_yaxis(); ax3.tick_params(axis='y', labelsize=9, colors=TEXT)
 #         plt.tight_layout(); st.pyplot(fig3); plt.close()
+
+# # ── CHOROPLETH MAP ────────────────────────────────────────────────────────────
+# elif "Choropleth" in section:
+#     st.markdown('<div class="section-header">Kenya County Budget Per Citizen — Map View</div>', unsafe_allow_html=True)
+#     try:
+#         kenya_geojson = load_geojson()
+#         fig_map = px.choropleth(
+#             df,
+#             geojson=kenya_geojson,
+#             locations='county',
+#             featureidkey='properties.COUNTY_NAM',
+#             color='budget_per_person',
+#             color_continuous_scale='RdYlGn',
+#             hover_name='county',
+#             hover_data={'budget_per_person': ':,', 'budget_billion': True, 'population_2024': ':,'},
+#             labels={'budget_per_person': 'KES/Person', 'budget_billion': 'Budget (KES B)', 'population_2024': 'Population'},
+#         )
+#         fig_map.update_geos(fitbounds="locations", visible=False)
+#         fig_map.update_layout(
+#             paper_bgcolor='#0a0f1e', plot_bgcolor='#0a0f1e', font_color='#e8eaf0',
+#             coloraxis_colorbar=dict(title='KES/Person', tickfont=dict(color='#e8eaf0'), titlefont=dict(color='#e8eaf0')),
+#             margin=dict(l=0, r=0, t=20, b=0), height=600
+#         )
+#         st.plotly_chart(fig_map, use_container_width=True)
+#         st.markdown('<div class="insight-box">🟢 <strong>Green</strong> = higher budget per person &nbsp;·&nbsp; 🔴 <strong>Red</strong> = lower budget per person<br>Hover over any county to see its exact budget, population and KES per person.</div>', unsafe_allow_html=True)
+#     except Exception as e:
+#         st.error(f"Could not load map: {e}")
 
 # # ── REGIONAL ─────────────────────────────────────────────────────────────────
 # elif "Regional" in section:
@@ -317,6 +356,18 @@ REGION_COLORS = {
     'Rift Valley': '#f97316', 'Western': '#ec4899',
 }
 
+NAME_MAP = {
+    'Tana River':     'Tana River',
+    'Taita Taveta':   'Taita-Taveta',
+    'Elgeyo Marakwet':'Elgeyo/Marakwet',
+    "Murang'a":       'Muranga',
+    'Trans Nzoia':    'Trans-Nzoia',
+    'Homa Bay':       'Homa Bay',
+    'Tharaka Nithi':  'Tharaka-Nithi',
+    'West Pokot':     'West Pokot',
+    'Uasin Gishu':    'Uasin Gishu',
+}
+
 def style_chart(fig, axes):
     fig.patch.set_facecolor(DARK_BG)
     if not hasattr(axes, '__iter__'): axes = [axes]
@@ -342,7 +393,9 @@ def load_geojson():
     with urllib.request.urlopen(url) as response:
         geojson = json.loads(response.read().decode())
     for feature in geojson['features']:
-        feature['properties']['COUNTY_NAM'] = feature['properties']['COUNTY_NAM'].strip().title()
+        name = feature['properties'].get('COUNTY_NAM', '')
+        if name:
+            feature['properties']['COUNTY_NAM'] = name.strip().title()
     return geojson
 
 df = load_data()
@@ -410,21 +463,35 @@ elif "Choropleth" in section:
     st.markdown('<div class="section-header">Kenya County Budget Per Citizen — Map View</div>', unsafe_allow_html=True)
     try:
         kenya_geojson = load_geojson()
+        df_map = df.copy()
+        df_map['county_mapped'] = df_map['county'].apply(lambda x: NAME_MAP.get(x, x))
         fig_map = px.choropleth(
-            df,
+            df_map,
             geojson=kenya_geojson,
-            locations='county',
+            locations='county_mapped',
             featureidkey='properties.COUNTY_NAM',
             color='budget_per_person',
             color_continuous_scale='RdYlGn',
             hover_name='county',
-            hover_data={'budget_per_person': ':,', 'budget_billion': True, 'population_2024': ':,'},
-            labels={'budget_per_person': 'KES/Person', 'budget_billion': 'Budget (KES B)', 'population_2024': 'Population'},
+            hover_data={
+                'county_mapped': False,
+                'budget_per_person': ':,',
+                'budget_billion': True,
+                'population_2024': ':,'
+            },
+            labels={
+                'budget_per_person': 'KES/Person',
+                'budget_billion': 'Budget (KES B)',
+                'population_2024': 'Population'
+            },
         )
         fig_map.update_geos(fitbounds="locations", visible=False)
         fig_map.update_layout(
             paper_bgcolor='#0a0f1e', plot_bgcolor='#0a0f1e', font_color='#e8eaf0',
-            coloraxis_colorbar=dict(title='KES/Person', tickfont=dict(color='#e8eaf0'), titlefont=dict(color='#e8eaf0')),
+            coloraxis_colorbar=dict(
+                title=dict(text='KES/Person', font=dict(color='#e8eaf0')),
+                tickfont=dict(color='#e8eaf0'),
+            ),
             margin=dict(l=0, r=0, t=20, b=0), height=600
         )
         st.plotly_chart(fig_map, use_container_width=True)
